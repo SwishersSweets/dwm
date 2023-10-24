@@ -1,3 +1,24 @@
+Patches:
+dwm-fullgaps-6.4
+dwm-swallow-6.3
+dwm-systray-6.4
+
+required font ttf-jetbrains-mono (aur)
+
+MOD = Super (windows key)
+MOD + B = Topbar shows or not
+MOD + Return (Enter) = Alacritty (can change by editing termcmd
+MOD + Shift + Return (Enter) = st
+MOD + Shift + S = screenshot (requires a screemshot tool/script)
+MOD + Tab = Zoom (chnages master)
+MOD + Shift + Q = kills slected apps (white border) 
+MOD + P = Decreace the number of master 
+MOD + Shift + P = Increases the number of master  
+MOD + Shift + E = quits DWM
+MOD + D = dmenu 
+
+
+
 dwm - dynamic window manager
 ============================
 dwm is an extremely fast, small, and dynamic window manager for X.
