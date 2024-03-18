@@ -2,8 +2,8 @@
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int gappx     = 10;        /* gaps between windows */
-static const unsigned int snap      = 10;       /* snap pixel */
+static const unsigned int gappx     = 4;        /* gaps between windows */
+static const unsigned int snap      = 2;       /* snap pixel */
 static const int swallowfloating = 0 ; /*1 means swallow floating window by default*/
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0;    /* 0: systray in the right corner, >0: systray on left of status text */
@@ -70,14 +70,20 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *st[] = { "st" , NULL }; 
 static const char *sp[] = { "src", NULL };
+static const char *bm[] = { "/home/nate/.config/scripts/dmenubookmark",  NULL };
+static const char *sdn[] = {"/home/nate/.config/scripts/dmenushutdown", NULL};
+static const char *rb[] = {"/home/nate/.config/scripts/dmenureboot", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ShiftMask, 		XK_Return, spawn, 	   {.v = st } },
-	{ MODKEY|ShiftMask,		XK_s,	   spawn, 	   {.v = sp }  },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask, 		        XK_Return, spawn, 	       {.v = st } },
+	{ MODKEY|ShiftMask,		          XK_s,	     spawn, 	       {.v = sp } },
+  { MODKEY|ShiftMask,             XK_b,      spawn,          {.v = bm } },
+  { MODKEY|ControlMask,           XK_e,      spawn,          {.v = sdn} },
+  { MODKEY|ControlMask|ShiftMask, XK_e,      spawn,          {.v = rb } },
+  { MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_p,      incnmaster,     {.i = +1 } },
