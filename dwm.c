@@ -261,10 +261,10 @@ static int updategeom(void);
 static void updatenumlockmask(void);
 static void updatesizehints(Client *c);
 static void updatestatus(void);
+static void updatetitle(Client *c);
 static void updatesystray(void);
 static void updatesystrayicongeom(Client *i, int w, int h);
 static void updatesystrayiconstate(Client *i, XPropertyEvent *ev);
-static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
@@ -813,15 +813,16 @@ destroynotify(XEvent *e)
 
 	if ((c = wintoclient(ev->window)))
 		unmanage(c, 1);
-	else if ((c = swallowingclient(ev->window)))
-		unmanage(c->swallowing, 1 );
-	else if ((c = wintosystrayicon(ev->window))) {
-		removesystrayicon(c);
-		resizebarwin(selmon);
-		updatesystray();
-	}
-}
 
+	else if ((c = swallowingclient(ev->window)))
+		unmanage(c->swallowing, 1);
+  
+  else if ((c = wintosystrayicon(ev->window))) {
+    removesystrayicon(c);
+    resizebarwin(selmon);
+    updatesystray();
+  }
+}
 void
 detach(Client *c)
 {
