@@ -71,8 +71,7 @@ static const char *termcmd[]  = { "alacritty", NULL };
 static const char *st[] = { "st" , NULL }; 
 static const char *sp[] = { "src", NULL };
 static const char *bm[] = { "/home/nate/.config/scripts/dmenubookmark",  NULL };
-static const char *sdn[] = {"/home/nate/.config/scripts/dmenushutdown", NULL};
-static const char *rb[] = {"/home/nate/.config/scripts/dmenureboot", NULL};
+static const char *rb[] = {"/home/nate/.config/scripts/dmenupower", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -81,8 +80,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask, 		        XK_Return, spawn, 	       {.v = st } },
 	{ MODKEY|ShiftMask,		          XK_s,	     spawn, 	       {.v = sp } },
   { MODKEY|ShiftMask,             XK_b,      spawn,          {.v = bm } },
-  { MODKEY|ControlMask,           XK_e,      spawn,          {.v = sdn} },
-  { MODKEY|ControlMask|ShiftMask, XK_e,      spawn,          {.v = rb } },
+  { MODKEY|ShiftMask,             XK_x,      spawn,          {.v = rb } },
   { MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      focusstack,     {.i = -1 } },
