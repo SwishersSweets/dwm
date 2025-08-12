@@ -117,6 +117,8 @@ static const Key keys[] = {
   { 0|ShiftMask,                  XF86XK_AudioNext,         spawn,  SHCMD("mpc next") },
   { 0|ShiftMask,                  XF86XK_AudioPlay,         spawn,  SHCMD("mpc play") },
   { 0|ShiftMask,                  XF86XK_AudioStop,         spawn,  SHCMD("mpc pause") },
+  { 0|ShiftMask,                  XF86XK_AudioRaiseVolume,  spawn,  SHCMD("mpc volume +2")  },
+  { 0|ShiftMask,                  XF86XK_AudioLowerVolume,  spawn,  SHCMD("mpc volume -2")  },
   TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
