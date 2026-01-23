@@ -3,7 +3,7 @@
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 2;       /* snap pixel */
-static const int swallowfloating = 0 ; /*1 means swallow floating window by default*/
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0;    /* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
@@ -32,7 +32,6 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
 /*	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
 	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },*/
 	{ "Alacritty",NULL,   NULL,            0,         0,          1,           0,        -1 },
@@ -45,6 +44,7 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -68,7 +68,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "kitty", NULL };
-static const char *st[] = { "st" , NULL }; 
+static const char *st[] = { "st", NULL };
 static const char *sp[] = { "src", NULL };
 static const char *picom[] = {"/home/nate/.config/scripts/picom.sh", NULL };
 static const char *bm[] = { "/home/nate/.config/scripts/dmenubookmark",  NULL };
@@ -80,18 +80,18 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
   { MODKEY|ShiftMask,             XK_d,      spawn,          {.v = rofi } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ShiftMask, 		        XK_Return, spawn, 	       {.v = st } },
+  { MODKEY|ShiftMask, 		        XK_Return, spawn, 	       {.v = st } },
 	{ MODKEY|ShiftMask,		          XK_s,	     spawn, 	       {.v = sp } },
   { MODKEY|ShiftMask,             XK_b,      spawn,          {.v = bm } },
   { MODKEY|ShiftMask,             XK_x,      spawn,          {.v = rb } },
   { MODKEY|ShiftMask,             XK_c,      spawn,          {.v = picom} },
-  { MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY|ShiftMask,             XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_p,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_p,      incnmaster,     {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY|ShiftMask,             XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Tab,    zoom,           {0} },
 	{ MODKEY|ShiftMask,             XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
@@ -103,10 +103,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },/*Moves Monitor Focus -1*/
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },/*Moves Monitor Focus +1*/
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },/*Sends Active Window to Monitor -1*/
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },/*Sends Active Window to Monitor +1*/
+	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
+	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
   { 0,                            XF86XK_AudioPrev,         spawn,  SHCMD("playerctl previous") },
   { 0,                            XF86XK_AudioPlay,         spawn,  SHCMD("playerctl play-pause") },
   { 0,                            XF86XK_AudioNext,         spawn,  SHCMD("playerctl next") },
@@ -119,7 +119,7 @@ static const Key keys[] = {
   { 0|ShiftMask,                  XF86XK_AudioStop,         spawn,  SHCMD("mpc pause") },
   { 0|ShiftMask,                  XF86XK_AudioRaiseVolume,  spawn,  SHCMD("mpc volume +2")  },
   { 0|ShiftMask,                  XF86XK_AudioLowerVolume,  spawn,  SHCMD("mpc volume -2")  },
-  TAGKEYS(                        XK_1,                      0)
+	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
 	TAGKEYS(                        XK_4,                      3)

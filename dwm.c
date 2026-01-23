@@ -32,11 +32,11 @@
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
+#include <X11/XF86keysym.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
-#include <X11/XF86keysym.h> /* added for media control*/
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
@@ -260,10 +260,10 @@ static int updategeom(void);
 static void updatenumlockmask(void);
 static void updatesizehints(Client *c);
 static void updatestatus(void);
-static void updatetitle(Client *c);
 static void updatesystray(void);
 static void updatesystrayicongeom(Client *i, int w, int h);
 static void updatesystrayiconstate(Client *i, XPropertyEvent *ev);
+static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
@@ -594,7 +594,7 @@ cleanup(void)
 	for (i = 0; i < CurLast; i++)
 		drw_cur_free(drw, cursor[i]);
 	for (i = 0; i < LENGTH(colors); i++)
-		free(scheme[i]);
+		drw_scm_free(drw, scheme[i], 3);
 	free(scheme);
 	XDestroyWindow(dpy, wmcheckwin);
 	drw_free(drw);
@@ -812,15 +812,15 @@ destroynotify(XEvent *e)
 	if ((c = wintoclient(ev->window)))
 		unmanage(c, 1);
 
+  else if ((c = wintosystrayicon(ev->window))) {
+		removesystrayicon(c);
+		resizebarwin(selmon);
+		updatesystray();
+  }
 	else if ((c = swallowingclient(ev->window)))
 		unmanage(c->swallowing, 1);
-  
-  else if ((c = wintosystrayicon(ev->window))) {
-    removesystrayicon(c);
-    resizebarwin(selmon);
-    updatesystray();
-  }
 }
+
 void
 detach(Client *c)
 {
@@ -1036,22 +1036,23 @@ Atom
 getatomprop(Client *c, Atom prop)
 {
 	int di;
-	unsigned long dl;
+	unsigned long nitems, dl;
 	unsigned char *p = NULL;
 	Atom da, atom = None;
 
 	/* FIXME getatomprop should return the number of items and a pointer to
 	 * the stored data instead of this workaround */
-	Atom req = XA_ATOM;
-	if (prop == xatom[XembedInfo])
-		req = xatom[XembedInfo];
+Atom req = XA_ATOM;
+if (prop == xatom[XembedInfo])
+	req = xatom[XembedInfo];
 
-	if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, False, req,
-		&da, &di, &dl, &dl, &p) == Success && p) {
-		atom = *(Atom *)p;
-		if (da == xatom[XembedInfo] && dl == 2)
-			atom = ((Atom *)p)[1];
-		XFree(p);
+if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, False, req,	
+		&da, &di, &nitems, &dl, &p) == Success && p) {
+		if (nitems > 0)
+			atom = *(Atom *)p;
+		  if (da == xatom[XembedInfo] && dl == 2)
+		  atom = ((Atom *)p)[1];
+    XFree(p);
 	}
 	return atom;
 }
@@ -1065,7 +1066,6 @@ getsystraywidth()
 		for(i = systray->icons; i; w += i->w + systrayspacing, i = i->next) ;
 	return w ? w + systrayspacing : 1;
 }
-
 int
 getrootptr(int *x, int *y)
 {
@@ -1373,7 +1373,7 @@ movemouse(const Arg *arg)
 			handler[ev.type](&ev);
 			break;
 		case MotionNotify:
-			if ((ev.xmotion.time - lasttime) <= (1000 / 60))
+			if ((ev.xmotion.time - lasttime) <= (1000 / refreshrate))
 				continue;
 			lasttime = ev.xmotion.time;
 
@@ -1572,7 +1572,7 @@ resizemouse(const Arg *arg)
 			handler[ev.type](&ev);
 			break;
 		case MotionNotify:
-			if ((ev.xmotion.time - lasttime) <= (1000 / 60))
+			if ((ev.xmotion.time - lasttime) <= (1000 / refreshrate))
 				continue;
 			lasttime = ev.xmotion.time;
 
